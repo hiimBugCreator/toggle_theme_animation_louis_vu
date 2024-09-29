@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:toggle_theme_animation_louis_vu/constants/constant.dart';
+import 'package:toggle_theme_animation_louis_vu/config/config.dart';
 
 class StarsBackground extends StatelessWidget {
   const StarsBackground({super.key});
@@ -13,8 +13,8 @@ class StarsBackground extends StatelessWidget {
         top: 23.0,
         bottom: 19.0,
         child: SizedBox(
-          width: ConstantValue.toggleSize.width * 142 / 369,
-          height: ConstantValue.toggleSize.height * 93 / 145,
+          width: NumericConstant.toggleSize.width * 142 / 369,
+          height: NumericConstant.toggleSize.height * 93 / 145,
           child: SvgPicture.asset(
             Assets.starIcon,
           ),

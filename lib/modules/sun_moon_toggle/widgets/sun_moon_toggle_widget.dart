@@ -1,19 +1,23 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger_beauty/log_level.dart';
 import 'package:logger_beauty/logger_beauty.dart';
-import 'package:toggle_theme_animation_louis_vu/widgets/star_background.dart';
-import '../constants/constant.dart';
-import '../controllers/theme_controller.dart';
+import 'package:toggle_theme_animation_louis_vu/config/config.dart';
+import 'package:toggle_theme_animation_louis_vu/config/constants/constant.dart';
+import 'package:toggle_theme_animation_louis_vu/core/controllers/theme_controller.dart';
+
 import 'circle_painter.dart';
 import 'cloud_background.dart';
+import 'star_background.dart';
 
 class SunMoonToggle extends StatefulWidget {
   final ThemeController controller;
+  final double buttonSize;
 
-  const SunMoonToggle({super.key, required this.controller});
+  const SunMoonToggle(
+      {super.key,
+      required this.controller,
+      this.buttonSize = NumericConstant.buttonSize});
 
   @override
   State<StatefulWidget> createState() => _SunMoonToggleState();
@@ -29,12 +33,11 @@ class _SunMoonToggleState extends State<SunMoonToggle>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: ConstantValue.animationDuration,
+      duration: NumericConstant.animationDuration,
     );
     _thumbAnimation = Tween<double>(
-      begin:
-          widget.controller.isDarkMode ? ConstantValue.buttonSize * 3.15 : 0.0,
-      end: ConstantValue.buttonSize * 3.15,
+      begin: widget.controller.isDarkMode ? widget.buttonSize * 3.15 : 0.0,
+      end: widget.buttonSize * 3.15,
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -49,7 +52,7 @@ class _SunMoonToggleState extends State<SunMoonToggle>
 
   @override
   Widget build(BuildContext context) {
-    var baseCircleSize = ConstantValue.buttonSize * 1.5;
+    var baseCircleSize = widget.buttonSize * 1.5;
     return GestureDetector(
       onTap: () {
         try {
@@ -64,10 +67,11 @@ class _SunMoonToggleState extends State<SunMoonToggle>
         }
       },
       child: Container(
-        width: ConstantValue.toggleSize.width,
-        height: ConstantValue.toggleSize.height,
+        width: NumericConstant.toggleSize.width,
+        height: NumericConstant.toggleSize.height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50), // Ensure it's rounded
+          borderRadius: BorderRadius.circular(widget.buttonSize),
+          // Ensure it's rounded
           color: widget.controller.isDarkMode
               ? ColorConstants.darkToggleBackground
               : ColorConstants.lightToggleBackground,
@@ -85,9 +89,9 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                   return Positioned(
                     right: widget.controller.isDarkMode
                         ? null
-                        : ConstantValue.toggleSize.width * 0.2,
+                        : NumericConstant.toggleSize.width * 0.2,
                     left: widget.controller.isDarkMode
-                        ? ConstantValue.toggleSize.width * 0.2
+                        ? NumericConstant.toggleSize.width * 0.2
                         : null,
                     child: IgnorePointer(
                       child: CustomPaint(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:toggle_theme_animation_louis_vu/widgets/sun_moon_toggle.dart';
+import 'package:toggle_theme_animation_louis_vu/core/controllers/theme_controller.dart';
+import 'package:toggle_theme_animation_louis_vu/modules/sun_moon_toggle/views/sun_moon_toggle_page.dart';
 
-import 'app_theme.dart';
-import 'controllers/theme_controller.dart';
+import 'config/config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,10 +30,8 @@ class _MyAppState extends State<MyApp> {
           themeMode:
               _themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: Scaffold(
-            appBar: AppBar(title: const Text('Sun/Moon Toggle')),
-            body: Center(
-              child: SunMoonToggle(controller: _themeController),
-            ),
+            appBar: AppBar(title: const Text(StringConstant.appName)),
+            body: SunMoonTogglePage(_themeController),
           ),
         );
       },
