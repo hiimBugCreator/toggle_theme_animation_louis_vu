@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger_beauty/log_level.dart';
 import 'package:logger_beauty/logger_beauty.dart';
 import 'package:toggle_theme_animation_louis_vu/config/config.dart';
-import 'package:toggle_theme_animation_louis_vu/config/constants/constant.dart';
 import 'package:toggle_theme_animation_louis_vu/core/controllers/theme_controller.dart';
 
 import 'circle_painter.dart';
@@ -14,10 +13,11 @@ class SunMoonToggle extends StatefulWidget {
   final ThemeController controller;
   final double buttonSize;
 
-  const SunMoonToggle(
-      {super.key,
-      required this.controller,
-      this.buttonSize = NumericConstant.buttonSize});
+  const SunMoonToggle({
+    super.key,
+    required this.controller,
+    this.buttonSize = NumericConstant.buttonSize,
+  });
 
   @override
   State<StatefulWidget> createState() => _SunMoonToggleState();
@@ -42,6 +42,10 @@ class _SunMoonToggleState extends State<SunMoonToggle>
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
+    if (widget.controller.isDarkMode) {
+      _animationController.value = 1.0;
+    }
+
     _thumbAnimation = Tween<double>(
       begin: widget.controller.isDarkMode ? widget.buttonSize * 3.15 : 0.0,
       end: widget.buttonSize * 3.15,
@@ -106,7 +110,7 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                 : ColorConstants.lightToggleBackground,
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(widget.buttonSize),
             child: Stack(
               children: [
                 widget.controller.isDarkMode
@@ -121,6 +125,10 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                             ? -_hoverAnimation.value
                             : _hoverAnimation.value)
                         : 0.0;
+                    double customPaintWidth = baseCircleSize * 4;
+                    double customPaintHeight = baseCircleSize * 1.25;
+                    // double thumbWidth = baseCircleSize;
+                    // double thumbPosition = _thumbAnimation.value + hoverOffset;
                     return Positioned(
                       right: widget.controller.isDarkMode
                           ? null
@@ -132,8 +140,7 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                         child: Transform.translate(
                           offset: Offset(hoverOffset, 0),
                           child: CustomPaint(
-                            size:
-                                Size(baseCircleSize * 4, baseCircleSize * 1.25),
+                            size: Size(customPaintWidth, customPaintHeight),
                             painter: CirclePainter(
                               widget.controller.isDarkMode
                                   ? Colors.grey.withOpacity(0.1)
