@@ -31,6 +31,8 @@ class _SunMoonToggleState extends State<SunMoonToggle>
   late Animation<double> _hoverAnimation;
   bool isHovering = false;
 
+  late var baseCircleSize = widget.buttonSize * 1.5;
+
   @override
   void initState() {
     super.initState();
@@ -81,9 +83,108 @@ class _SunMoonToggleState extends State<SunMoonToggle>
     });
   }
 
+  get _clouds => AnimatedPositioned(
+        duration: NumericConstant.animationDuration,
+        top: widget.controller.isDarkMode ? widget.buttonSize : 0,
+        bottom: widget.controller.isDarkMode ? -widget.buttonSize : 0,
+        left: 0,
+        right: 0,
+        child: AnimatedOpacity(
+          opacity: widget.controller.isDarkMode ? 0 : 1,
+          duration: NumericConstant.animationDuration,
+          child: const CloudsBackground(),
+        ),
+      );
+
+  get _stars => AnimatedPositioned(
+        duration: NumericConstant.animationDuration,
+        top: widget.controller.isDarkMode ? 0 : -widget.buttonSize,
+        bottom: widget.controller.isDarkMode ? 0 : widget.buttonSize,
+        left: 0,
+        right: 0,
+        child: AnimatedOpacity(
+          opacity: widget.controller.isDarkMode ? 1 : 0,
+          duration: NumericConstant.animationDuration,
+          child: const StarsBackground(),
+        ),
+      );
+
+  get _shiny => AnimatedBuilder(
+        animation: Listenable.merge([_thumbAnimation, _hoverAnimation]),
+        builder: (context, child) {
+          double hoverOffset = isHovering
+              ? (widget.controller.isDarkMode
+                  ? -_hoverAnimation.value
+                  : _hoverAnimation.value)
+              : 0.0;
+          double customPaintWidth = baseCircleSize * 4;
+          double customPaintHeight = baseCircleSize * 1.25;
+          return Positioned(
+            right: widget.controller.isDarkMode
+                ? -NumericConstant.toggleSize.width * 0.4155
+                : NumericConstant.toggleSize.width * 0.2,
+            left: widget.controller.isDarkMode
+                ? NumericConstant.toggleSize.width * 0.2
+                : -NumericConstant.toggleSize.width * 0.4155,
+            child: IgnorePointer(
+              child: Transform.translate(
+                offset: Offset(hoverOffset, 0),
+                child: CustomPaint(
+                  size: Size(customPaintWidth, customPaintHeight),
+                  painter: CirclePainter(
+                    widget.controller.isDarkMode
+                        ? Colors.grey.withOpacity(0.1)
+                        : Colors.white.withOpacity(0.1),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
+  get _thumb => AnimatedBuilder(
+        animation: Listenable.merge([_thumbAnimation, _hoverAnimation]),
+        builder: (context, child) {
+          double hoverOffset = isHovering
+              ? (widget.controller.isDarkMode
+                  ? -_hoverAnimation.value
+                  : _hoverAnimation.value)
+              : 0.0;
+          return Positioned(
+            left: _thumbAnimation.value + hoverOffset,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Stack(children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  child: SizedBox(
+                    width: baseCircleSize,
+                    height: baseCircleSize,
+                    child: SvgPicture.asset(
+                      widget.controller.isDarkMode
+                          ? Assets.moonIcon
+                          : Assets.sunIcon,
+                    ),
+                  ),
+                ),
+              ]),
+            ),
+          );
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
-    var baseCircleSize = widget.buttonSize * 1.5;
     return GestureDetector(
       onTap: () {
         try {
@@ -100,7 +201,8 @@ class _SunMoonToggleState extends State<SunMoonToggle>
       child: MouseRegion(
         onEnter: (_) => _onHover(true),
         onExit: (_) => _onHover(false),
-        child: Container(
+        child: AnimatedContainer(
+          duration: NumericConstant.animationDuration,
           width: NumericConstant.toggleSize.width,
           height: NumericConstant.toggleSize.height,
           decoration: BoxDecoration(
@@ -113,104 +215,10 @@ class _SunMoonToggleState extends State<SunMoonToggle>
             borderRadius: BorderRadius.circular(widget.buttonSize),
             child: Stack(
               children: [
-                AnimatedPositioned(
-                  duration: NumericConstant.animationDuration,
-                  top: widget.controller.isDarkMode ? widget.buttonSize : 0,
-                  bottom: widget.controller.isDarkMode ? -widget.buttonSize : 0,
-                  left: 0,
-                  right: 0,
-                  child: AnimatedOpacity(
-                    opacity: widget.controller.isDarkMode ? 0 : 1,
-                    duration: NumericConstant.animationDuration,
-                    child: const CloudsBackground(),
-                  ),
-                ),
-                AnimatedPositioned(
-                  duration: NumericConstant.animationDuration,
-                  top: widget.controller.isDarkMode ? 0 : -widget.buttonSize,
-                  bottom: widget.controller.isDarkMode ? 0 : widget.buttonSize,
-                  left: 0,
-                  right: 0,
-                  child: AnimatedOpacity(
-                    opacity: widget.controller.isDarkMode ? 1 : 0,
-                    duration: NumericConstant.animationDuration,
-                    child: const StarsBackground(),
-                  ),
-                ),
-                AnimatedBuilder(
-                  animation:
-                      Listenable.merge([_thumbAnimation, _hoverAnimation]),
-                  builder: (context, child) {
-                    double hoverOffset = isHovering
-                        ? (widget.controller.isDarkMode
-                            ? -_hoverAnimation.value
-                            : _hoverAnimation.value)
-                        : 0.0;
-                    double customPaintWidth = baseCircleSize * 4;
-                    double customPaintHeight = baseCircleSize * 1.25;
-                    return Positioned(
-                      right: widget.controller.isDarkMode
-                          ? -NumericConstant.toggleSize.width * 0.4155
-                          : NumericConstant.toggleSize.width * 0.2,
-                      left: widget.controller.isDarkMode
-                          ? NumericConstant.toggleSize.width * 0.2
-                          : -NumericConstant.toggleSize.width * 0.4155,
-                      child: IgnorePointer(
-                        child: Transform.translate(
-                          offset: Offset(hoverOffset, 0),
-                          child: CustomPaint(
-                            size: Size(customPaintWidth, customPaintHeight),
-                            painter: CirclePainter(
-                              widget.controller.isDarkMode
-                                  ? Colors.grey.withOpacity(0.1)
-                                  : Colors.white.withOpacity(0.1),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                AnimatedBuilder(
-                  animation:
-                      Listenable.merge([_thumbAnimation, _hoverAnimation]),
-                  builder: (context, child) {
-                    double hoverOffset = isHovering
-                        ? (widget.controller.isDarkMode
-                            ? -_hoverAnimation.value
-                            : _hoverAnimation.value)
-                        : 0.0;
-                    return Positioned(
-                      left: _thumbAnimation.value + hoverOffset,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Stack(children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: SizedBox(
-                              width: baseCircleSize,
-                              height: baseCircleSize,
-                              child: SvgPicture.asset(
-                                widget.controller.isDarkMode
-                                    ? Assets.moonIcon
-                                    : Assets.sunIcon,
-                              ),
-                            ),
-                          ),
-                        ]),
-                      ),
-                    );
-                  },
-                ),
+                _clouds,
+                _stars,
+                _shiny,
+                _thumb,
               ],
             ),
           ),
