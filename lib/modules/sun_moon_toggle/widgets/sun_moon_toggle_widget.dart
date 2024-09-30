@@ -131,11 +131,11 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                     // double thumbPosition = _thumbAnimation.value + hoverOffset;
                     return Positioned(
                       right: widget.controller.isDarkMode
-                          ? null
+                          ? -NumericConstant.toggleSize.width * 0.4155
                           : NumericConstant.toggleSize.width * 0.2,
                       left: widget.controller.isDarkMode
                           ? NumericConstant.toggleSize.width * 0.2
-                          : null,
+                          : -NumericConstant.toggleSize.width * 0.4155,
                       child: IgnorePointer(
                         child: Transform.translate(
                           offset: Offset(hoverOffset, 0),
