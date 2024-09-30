@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:toggle_theme_animation_louis_vu/config/config.dart';
 
 class CirclePainter extends CustomPainter {
   final Color color;
@@ -8,10 +9,10 @@ class CirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    const int numberOfCircles = 3;
-    final double radiusIncrement = size.width / 6;
+    final double radiusIncrement =
+        size.width / (2 * NumericConstant.numberOfCirclesShine);
     var reduce = 15;
-    for (int i = 1; i <= numberOfCircles; i++) {
+    for (int i = 1; i <= NumericConstant.numberOfCirclesShine; i++) {
       final paint = Paint()
         ..style = PaintingStyle.fill
         ..color = color;

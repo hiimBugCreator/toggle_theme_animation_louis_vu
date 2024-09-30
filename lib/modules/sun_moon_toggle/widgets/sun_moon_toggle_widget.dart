@@ -42,15 +42,16 @@ class _SunMoonToggleState extends State<SunMoonToggle>
     );
     _hoverAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: NumericConstant.hoverAnimationDuration,
     );
     if (widget.controller.isDarkMode) {
       _animationController.value = 1.0;
     }
 
+    var buttonDistance = widget.buttonSize * 3.15;
     _thumbAnimation = Tween<double>(
-      begin: widget.controller.isDarkMode ? widget.buttonSize * 3.15 : 0.0,
-      end: widget.buttonSize * 3.15,
+      begin: widget.controller.isDarkMode ? buttonDistance : 0.0,
+      end: buttonDistance,
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -132,9 +133,7 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                 child: CustomPaint(
                   size: Size(customPaintWidth, customPaintHeight),
                   painter: CirclePainter(
-                    widget.controller.isDarkMode
-                        ? Colors.grey.withOpacity(0.1)
-                        : Colors.white.withOpacity(0.1),
+                    Colors.white.withOpacity(0.1),
                   ),
                 ),
               ),
@@ -154,14 +153,14 @@ class _SunMoonToggleState extends State<SunMoonToggle>
           return Positioned(
             left: _thumbAnimation.value + hoverOffset,
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(NumericConstant.paddingButton),
               child: Stack(children: [
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: ColorConstants.shadowColor,
                         blurRadius: 8,
                         offset: const Offset(2, 2),
                       ),
