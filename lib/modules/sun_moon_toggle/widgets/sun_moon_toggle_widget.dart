@@ -113,9 +113,30 @@ class _SunMoonToggleState extends State<SunMoonToggle>
             borderRadius: BorderRadius.circular(widget.buttonSize),
             child: Stack(
               children: [
-                widget.controller.isDarkMode
-                    ? const StarsBackground()
-                    : const CloudsBackground(),
+                AnimatedPositioned(
+                  duration: NumericConstant.animationDuration,
+                  top: widget.controller.isDarkMode ? widget.buttonSize : 0,
+                  bottom: widget.controller.isDarkMode ? -widget.buttonSize : 0,
+                  left: 0,
+                  right: 0,
+                  child: AnimatedOpacity(
+                    opacity: widget.controller.isDarkMode ? 0 : 1,
+                    duration: NumericConstant.animationDuration,
+                    child: const CloudsBackground(),
+                  ),
+                ),
+                AnimatedPositioned(
+                  duration: NumericConstant.animationDuration,
+                  top: widget.controller.isDarkMode ? 0 : -widget.buttonSize,
+                  bottom: widget.controller.isDarkMode ? 0 : widget.buttonSize,
+                  left: 0,
+                  right: 0,
+                  child: AnimatedOpacity(
+                    opacity: widget.controller.isDarkMode ? 1 : 0,
+                    duration: NumericConstant.animationDuration,
+                    child: const StarsBackground(),
+                  ),
+                ),
                 AnimatedBuilder(
                   animation:
                       Listenable.merge([_thumbAnimation, _hoverAnimation]),
@@ -127,8 +148,6 @@ class _SunMoonToggleState extends State<SunMoonToggle>
                         : 0.0;
                     double customPaintWidth = baseCircleSize * 4;
                     double customPaintHeight = baseCircleSize * 1.25;
-                    // double thumbWidth = baseCircleSize;
-                    // double thumbPosition = _thumbAnimation.value + hoverOffset;
                     return Positioned(
                       right: widget.controller.isDarkMode
                           ? -NumericConstant.toggleSize.width * 0.4155
